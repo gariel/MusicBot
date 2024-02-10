@@ -48,7 +48,8 @@ public class BotConfig
     private Config aliases, transforms;
 
     private boolean valid = false;
-    
+    private String csvLogFile;
+
     public BotConfig(Prompt prompt)
     {
         this.prompt = prompt;
@@ -91,6 +92,7 @@ public class BotConfig
             playlistsFolder = config.getString("playlistsfolder");
             aliases = config.getConfig("aliases");
             transforms = config.getConfig("transforms");
+            csvLogFile = config.getString("csvlogfile");
             dbots = owner == 113156185389092864L;
             
             // we may need to write a new config file
@@ -348,5 +350,10 @@ public class BotConfig
     public Config getTransforms()
     {
         return transforms;
+    }
+
+    public String getCsvLogFile()
+    {
+        return csvLogFile;
     }
 }

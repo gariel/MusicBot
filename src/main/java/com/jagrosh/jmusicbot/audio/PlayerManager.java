@@ -16,6 +16,7 @@
 package com.jagrosh.jmusicbot.audio;
 
 import com.jagrosh.jmusicbot.Bot;
+import com.jagrosh.jmusicbot.custom.MusicPlayerLog;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
@@ -29,10 +30,12 @@ import net.dv8tion.jda.api.entities.Guild;
 public class PlayerManager extends DefaultAudioPlayerManager
 {
     private final Bot bot;
-    
-    public PlayerManager(Bot bot)
+    private final MusicPlayerLog musicPlayerLog;
+
+    public PlayerManager(Bot bot, MusicPlayerLog musicPlayerLog)
     {
         this.bot = bot;
+        this.musicPlayerLog = musicPlayerLog;
     }
     
     public void init()
@@ -60,7 +63,7 @@ public class PlayerManager extends DefaultAudioPlayerManager
         {
             AudioPlayer player = createPlayer();
             player.setVolume(bot.getSettingsManager().getSettings(guild).getVolume());
-            handler = new AudioHandler(this, guild, player);
+            handler = new AudioHandler(this, guild, player, musicPlayerLog);
             player.addListener(handler);
             guild.getAudioManager().setSendingHandler(handler);
         }

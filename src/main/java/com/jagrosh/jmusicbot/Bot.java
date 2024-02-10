@@ -22,6 +22,7 @@ import com.jagrosh.jmusicbot.audio.AloneInVoiceHandler;
 import com.jagrosh.jmusicbot.audio.AudioHandler;
 import com.jagrosh.jmusicbot.audio.NowplayingHandler;
 import com.jagrosh.jmusicbot.audio.PlayerManager;
+import com.jagrosh.jmusicbot.custom.MusicPlayerLog;
 import com.jagrosh.jmusicbot.gui.GUI;
 import com.jagrosh.jmusicbot.playlist.PlaylistLoader;
 import com.jagrosh.jmusicbot.settings.SettingsManager;
@@ -44,6 +45,7 @@ public class Bot
     private final PlaylistLoader playlists;
     private final NowplayingHandler nowplaying;
     private final AloneInVoiceHandler aloneInVoiceHandler;
+    private final MusicPlayerLog musicPlayerLog;
     
     private boolean shuttingDown = false;
     private JDA jda;
@@ -56,7 +58,8 @@ public class Bot
         this.settings = settings;
         this.playlists = new PlaylistLoader(config);
         this.threadpool = Executors.newSingleThreadScheduledExecutor();
-        this.players = new PlayerManager(this);
+        this.musicPlayerLog = new MusicPlayerLog(config);
+        this.players = new PlayerManager(this, musicPlayerLog);
         this.players.init();
         this.nowplaying = new NowplayingHandler(this);
         this.nowplaying.init();

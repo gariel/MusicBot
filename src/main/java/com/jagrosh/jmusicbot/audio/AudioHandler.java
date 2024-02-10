@@ -16,6 +16,7 @@
 package com.jagrosh.jmusicbot.audio;
 
 import com.jagrosh.jmusicbot.JMusicBot;
+import com.jagrosh.jmusicbot.custom.MusicPlayerLog;
 import com.jagrosh.jmusicbot.playlist.PlaylistLoader.Playlist;
 import com.jagrosh.jmusicbot.settings.RepeatMode;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
@@ -57,14 +58,16 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler
     private final PlayerManager manager;
     private final AudioPlayer audioPlayer;
     private final long guildId;
+    private final MusicPlayerLog musicPlayerLog;
     
     private AudioFrame lastFrame;
 
-    protected AudioHandler(PlayerManager manager, Guild guild, AudioPlayer player)
+    protected AudioHandler(PlayerManager manager, Guild guild, AudioPlayer player, MusicPlayerLog musicPlayerLog)
     {
         this.manager = manager;
         this.audioPlayer = player;
         this.guildId = guild.getIdLong();
+        this.musicPlayerLog = musicPlayerLog;
     }
 
     public int addTrackToFront(QueuedTrack qtrack)
@@ -169,6 +172,13 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler
                 queue.add(clone);
             else
                 queue.addAt(0, clone);
+        }
+
+        float percentListened = track.getPosition() / (float) track.getDuration();
+        if (endReason != AudioTrackEndReason.FINISHED && percentListened > 0.15)
+        {
+            RequestMetadata rm = track.getUserData(RequestMetadata.class);
+            musicPlayerLog.addListenedTrack(track.getInfo(), rm);
         }
         
         if(queue.isEmpty())
